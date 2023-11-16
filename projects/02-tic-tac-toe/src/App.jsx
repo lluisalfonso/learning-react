@@ -1,24 +1,28 @@
 import { useState } from "react"
 import confetti from "canvas-confetti"
 import { checkWinnerFrom, checkEndGameFrom, getNewTurn, getInitialTurn } from "./logic/board"
+import { saveBoardState, loadBoardFromStorage, loadTurnFromStorage, removeBoardStateFromStorage } from "./logic/storage"
 import { WinnerModal } from "./components/WinnerModal"
 import { Turn } from "./components/Turn"
 import { Board } from "./components/Board"
 import { StartAgainButton } from "./components/StartAgainButton"
 
 function App() {
-  const [board, setBoard] = useState(
-    Array(9).fill(null)
+  const [board, setBoard] = useState(() => {
+      const boardFromStorage = loadBoardFromStorage()
+      return boardFromStorage ? JSON.parse(boardFromStorage) : Array(9).fill(null)
+    }
   )
 
-  const [turn, setTurn] = useState(
-    getInitialTurn()
+  const [turn, setTurn] = useState(() => {
+      const turnFromStorage = loadTurnFromStorage()
+      return turnFromStorage ? turnFromStorage : getInitialTurn()
+    }
   )
 
   const [winner, setWinner] = useState(null)
 
   const updateBoard = (index) => {
-    console.log(board[index])
     if (board[index] || winner) return
 
     const newBoard = [...board]
@@ -28,13 +32,20 @@ function App() {
     const newTurn = getNewTurn(turn)
     setTurn(newTurn)
 
+    saveBoardState({
+      board: newBoard, 
+      turn: newTurn
+    })
+
     const newWinner = checkWinnerFrom(newBoard);
 
     if (newWinner) {
       setWinner(newWinner)
       confetti()
+      removeBoardStateFromStorage()
     } else if (checkEndGameFrom(newBoard)) {
       setWinner(false)
+      removeBoardStateFromStorage()
     }
   }
 
@@ -42,6 +53,7 @@ function App() {
     setBoard(Array(9).fill(null))
     setTurn(getInitialTurn())
     setWinner(null)
+    removeBoardStateFromStorage()
   }
 
   return (
