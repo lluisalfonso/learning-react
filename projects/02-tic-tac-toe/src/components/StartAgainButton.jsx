@@ -1,5 +1,5 @@
-export function StartAgainButton({resetGame}) {
-    return (
-        <button onClick={resetGame}>Empezar de nuevo</button>
-    )
+export function StartAgainButton ({ resetGame }) {
+  return (
+    <button onClick={resetGame}>Empezar de nuevo</button>
+  )
 }

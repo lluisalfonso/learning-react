@@ -1,23 +1,23 @@
-import { useState } from "react"
-import confetti from "canvas-confetti"
-import { checkWinnerFrom, checkEndGameFrom, getNewTurn, getInitialTurn } from "./logic/board"
-import { saveBoardState, loadBoardFromStorage, loadTurnFromStorage, removeBoardStateFromStorage } from "./logic/storage"
-import { WinnerModal } from "./components/WinnerModal"
-import { Turn } from "./components/Turn"
-import { Board } from "./components/Board"
-import { StartAgainButton } from "./components/StartAgainButton"
+import { useState } from 'react'
+import confetti from 'canvas-confetti'
+import { checkWinnerFrom, checkEndGameFrom, getNewTurn, getInitialTurn } from './logic/board'
+import { saveBoardState, loadBoardFromStorage, loadTurnFromStorage, removeBoardStateFromStorage } from './logic/storage'
+import { WinnerModal } from './components/WinnerModal'
+import { Turn } from './components/Turn'
+import { Board } from './components/Board'
+import { StartAgainButton } from './components/StartAgainButton'
 
-function App() {
+function App () {
   const [board, setBoard] = useState(() => {
-      const boardFromStorage = loadBoardFromStorage()
-      return boardFromStorage ? JSON.parse(boardFromStorage) : Array(9).fill(null)
-    }
+    const boardFromStorage = loadBoardFromStorage()
+    return boardFromStorage ? JSON.parse(boardFromStorage) : Array(9).fill(null)
+  }
   )
 
   const [turn, setTurn] = useState(() => {
-      const turnFromStorage = loadTurnFromStorage()
-      return turnFromStorage ? turnFromStorage : getInitialTurn()
-    }
+    const turnFromStorage = loadTurnFromStorage()
+    return turnFromStorage || getInitialTurn()
+  }
   )
 
   const [winner, setWinner] = useState(null)
@@ -33,11 +33,11 @@ function App() {
     setTurn(newTurn)
 
     saveBoardState({
-      board: newBoard, 
+      board: newBoard,
       turn: newTurn
     })
 
-    const newWinner = checkWinnerFrom(newBoard);
+    const newWinner = checkWinnerFrom(newBoard)
 
     if (newWinner) {
       setWinner(newWinner)
@@ -57,16 +57,16 @@ function App() {
   }
 
   return (
-    <main className="board">
+    <main className='board'>
       <h1>Tic tac toe</h1>
 
-      <StartAgainButton resetGame={resetGame}/>
+      <StartAgainButton resetGame={resetGame} />
 
-      <Board board={board} updateBoard={updateBoard}/>
+      <Board board={board} updateBoard={updateBoard} />
 
-      <Turn turn={turn}></Turn>
-      
-      <WinnerModal winner={winner} resetGame={resetGame}></WinnerModal>
+      <Turn turn={turn} />
+
+      <WinnerModal winner={winner} resetGame={resetGame} />
     </main>
   )
 }
